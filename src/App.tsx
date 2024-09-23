@@ -3,6 +3,34 @@ import axios from "axios";
 
 const RANDOM_USER_EP = "https://randomuser.me/api";
 
+interface RandomUser {
+  name: {
+    title: string;
+    first: string;
+    last: string;
+  };
+  location: {
+    street: {
+      number: number;
+      name: string;
+    };
+    city: string;
+    state: string;
+    country: string;
+  };
+  dob: {
+    age: number;
+  };
+  email: string;
+  cell: string;
+  picture: {
+    medium: string;
+  };
+  login: {
+    uuid: string;
+  };
+}
+
 const randomUsersApi = axios.create({
   baseURL: RANDOM_USER_EP,
   headers: {
@@ -12,9 +40,9 @@ const randomUsersApi = axios.create({
 
 const gifbg = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXAwcTh6aXpoMGdiZnl5aGhkaTl3aHZ0eHYyaTR2aHExYXhvYTdxaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/QpVUMRUJGokfqXyfa1/giphy.webp";
 
-const App = () => {
-  const [count, setCount] = useState(10);
-  const [results, setResults] = useState([]);
+const App: React.FC = () => {
+  const [count, setCount] = useState<number>(10);
+  const [results, setResults] = useState<RandomUser[]>([]);
 
   useEffect(() => {
     getRandomUsers();
@@ -22,7 +50,7 @@ const App = () => {
 
   const getRandomUsers = async () => {
     try {
-      const res = await randomUsersApi.get("/", {
+      const res = await randomUsersApi.get<{ results: RandomUser[] }>("/", {
         params: { results: count },
       });
       const randomUsersResults = res.data?.results ?? [];
@@ -119,12 +147,13 @@ const App = () => {
                   alt={`${name.first} ${name.last}`}
                   style={{
                     borderRadius: "50%",
-                    width: "50px",
-                    height: "50px",
-                    marginRight: "16px",
+                    width: "100px",
+                    height: "100px",
+                    marginRight: "35px",
+                    marginLeft: "20px"
                   }}
                 />
-                <div style={{ flexGrow: 1 }}>
+                <div style={{ flexGrow: 1}}>
                   <h4 style={{ margin: "0 0 4px 0", fontSize: "18px" }}>
                     {name.title} {name.first} {name.last}
                   </h4>
@@ -192,6 +221,7 @@ const App = () => {
                     cursor: "pointer",
                     border: "none",
                     transition: "background-color 0.3s ease",
+                    marginRight: 20
                   }}
                 >
                   Remove
